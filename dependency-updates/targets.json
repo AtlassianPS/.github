@@ -1,0 +1,22 @@
+[
+  {
+    "repository": "AtlassianPS.Configuration",
+    "module": "AtlassianPS.Configuration",
+    "labels": "dependencies,release:none"
+  },
+  {
+    "repository": "ConfluencePS",
+    "module": "ConfluencePS",
+    "labels": "dependencies,release:none"
+  },
+  {
+    "repository": "JiraAgilePS",
+    "module": "JiraAgilePS",
+    "labels": "dependencies,release:none"
+  },
+  {
+    "repository": "JiraPS",
+    "module": "JiraPS",
+    "labels": "dependencies"
+  }
+]
