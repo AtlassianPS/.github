@@ -18,9 +18,9 @@ It needs these repository permissions:
 - Pull requests: read and write
 - Workflows: read and write
 
-Expose its credentials to this repository as organization secrets:
+Expose its Client ID as a repository variable and its private key as a repository secret:
 
-- `DEPENDENCY_UPDATE_APP_ID`
+- `DEPENDENCY_UPDATE_APP_CLIENT_ID`
 - `DEPENDENCY_UPDATE_APP_PRIVATE_KEY`
 
 The workflow requests a short-lived token for one target repository at a time.
