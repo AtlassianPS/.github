@@ -61,7 +61,7 @@ Describe 'Update-RepositoryDependencies' {
         } | Should -Not -Throw
     }
 
-    It 'passes the declared files and major-upgrade choice to Standards' {
+    It 'passes the declared files to Standards without enabling major upgrades' {
         $repositoryPath = Join-Path $TestDrive 'delegation'
         New-TestRepository -Path $repositoryPath
         Set-Content `
@@ -77,14 +77,13 @@ Describe 'Update-RepositoryDependencies' {
         $result = Invoke-RepositoryDependencyUpdate `
             -RepositoryPath $repositoryPath `
             -ModuleName TestModule `
-            -StandardsVersion '0.3.1' `
-            -AllowMajorVersionUpgrade
+            -StandardsVersion '0.3.1'
 
         $result.Changed | Should -BeTrue
         Should -Invoke Invoke-StandardsDependencyUpdate -Times 1 -ParameterFilter {
             $Parameters.BuildRequirementsPath -eq (Join-Path $repositoryPath 'Tools/build.requirements.psd1') -and
             $Parameters.ManifestPath -eq (Join-Path $repositoryPath 'TestModule/TestModule.psd1') -and
-            $Parameters.AllowMajorVersionUpgrade
+            -not $Parameters.ContainsKey('AllowMajorVersionUpgrade')
         }
     }
 
