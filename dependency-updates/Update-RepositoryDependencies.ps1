@@ -12,10 +12,7 @@ param(
 
     [Parameter()]
     [ValidatePattern('^\d+\.\d+\.\d+$')]
-    [String]$StandardsVersion = '0.3.1',
-
-    [Parameter()]
-    [Switch]$AllowMajorVersionUpgrade
+    [String]$StandardsVersion = '0.3.1'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -125,10 +122,7 @@ function Invoke-RepositoryDependencyUpdate {
         [String]$ModuleName,
 
         [Parameter(Mandatory)]
-        [String]$StandardsVersion,
-
-        [Parameter()]
-        [Switch]$AllowMajorVersionUpgrade
+        [String]$StandardsVersion
     )
 
     $resolvedRepositoryPath = (Resolve-Path -LiteralPath $RepositoryPath).ProviderPath
@@ -173,10 +167,9 @@ function Invoke-RepositoryDependencyUpdate {
     Import-Module AtlassianPS.Standards -RequiredVersion $StandardsVersion -Force -ErrorAction Stop
 
     $updateParameters = @{
-        BuildRequirementsPath    = $buildRequirementsPath
-        ManifestPath             = $manifestPath
-        AllowMajorVersionUpgrade = $AllowMajorVersionUpgrade
-        ErrorAction              = 'Stop'
+        BuildRequirementsPath = $buildRequirementsPath
+        ManifestPath          = $manifestPath
+        ErrorAction           = 'Stop'
     }
 
     $result = Invoke-StandardsDependencyUpdate -Parameters $updateParameters

@@ -10,11 +10,6 @@ on:
         required: true
         default: all
         type: string
-      allow_major_version_upgrade:
-        description: Allow dependencies to cross major-version boundaries
-        required: true
-        default: false
-        type: boolean
 
 permissions:
   contents: read
@@ -93,18 +88,11 @@ jobs:
       - name: Update dependencies
         shell: pwsh
         env:
-          ALLOW_MAJOR_VERSION_UPGRADE: ${{ inputs.allow_major_version_upgrade }}
           GITHUB_TOKEN: ${{ github.token }}
         run: |
-          $parameters = @{
-            RepositoryPath = './target'
-            ModuleName = '${{ matrix.target.module }}'
-          }
-          if ($env:ALLOW_MAJOR_VERSION_UPGRADE -eq 'true') {
-            $parameters.AllowMajorVersionUpgrade = $true
-          }
-
-          ./controller/dependency-updates/Update-RepositoryDependencies.ps1 @parameters
+          ./controller/dependency-updates/Update-RepositoryDependencies.ps1 `
+            -RepositoryPath './target' `
+            -ModuleName '${{ matrix.target.module }}'
 
       - name: Create or refresh pull request
         uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1

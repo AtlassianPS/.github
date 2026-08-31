@@ -32,4 +32,5 @@ The workflow requests a short-lived token for one target repository at a time.
 
 Run **PowerShell dependency updates** from the Actions page.
 Use `all` to process every configured repository or provide one repository name from `targets.json`.
-Scheduled runs preserve dependency major versions; manual runs can explicitly allow major upgrades.
+Scheduled and manual runs preserve dependency major versions. Major dependency upgrades are handled
+manually in the target repository so their compatibility changes can be reviewed together.
