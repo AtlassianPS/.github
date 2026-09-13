@@ -17,6 +17,6 @@
   {
     "repository": "JiraPS",
     "module": "JiraPS",
-    "labels": "dependencies"
+    "labels": "dependencies,release:none"
   }
 ]
