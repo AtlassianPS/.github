@@ -10,9 +10,9 @@ The controller and workflow contract are validated by the repository's `CI` work
 
 ## GitHub App
 
-The workflow reuses the organization-wide AtlassianPS Release Bot instead of maintaining a second
-automation identity.
-Give the App access only to this controller and the repositories in `targets.json`.
+The workflow uses the dedicated AtlassianPS Dependency Updates App so routine dependency pull
+requests do not share the release identity.
+Give the App selected-repository access only to the repositories in `targets.json`.
 It needs these repository permissions:
 
 - Contents: read and write
@@ -20,11 +20,11 @@ It needs these repository permissions:
 - Pull requests: read and write
 - Workflows: read and write
 
-Expose its Client ID as an organization variable and its private key as an organization secret,
-including access from this repository:
+Expose its Client ID as an Actions variable and its private key as an Actions secret in this
+repository:
 
-- `ATLASSIANPS_RELEASE_APP_CLIENT_ID`
-- `ATLASSIANPS_RELEASE_APP_PRIVATE_KEY`
+- `DEPENDENCY_UPDATE_APP_CLIENT_ID`
+- `DEPENDENCY_UPDATE_APP_PRIVATE_KEY`
 
 The workflow requests a short-lived token for one target repository at a time.
 
