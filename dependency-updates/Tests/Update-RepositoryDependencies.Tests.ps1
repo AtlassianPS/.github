@@ -1,4 +1,4 @@
-#requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '5.7'; MaximumVersion = '5.999' }
+#requires -Modules @{ ModuleName = 'Pester'; ModuleVersion = '6.2.0'; MaximumVersion = '6.999' }
 
 BeforeAll {
     $scriptPath = Join-Path $PSScriptRoot '../Update-RepositoryDependencies.ps1'
