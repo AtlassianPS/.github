@@ -101,6 +101,20 @@ function Sync-StandardsWorkflowReference {
             Set-FileTextState -State $state -Text $updatedText
         }
     }
+
+    $consistencyTestPath = Join-Path $ProjectRoot 'Tests/Tools/StandardsVersionConsistency.Unit.Tests.ps1'
+    if (Test-Path -LiteralPath $consistencyTestPath -PathType Leaf) {
+        $state = Get-FileTextState -Path $consistencyTestPath
+        $updatedText = [regex]::Replace(
+            $state.Text,
+            '(?<prefix>\$(?:expectedStandardsSha|script:standardsActionSha)\s*=\s*[''"])[0-9a-f]{40}(?<suffix>[''"])',
+            ('${prefix}' + $commit + '${suffix}')
+        )
+
+        if ($updatedText -ne $state.Text) {
+            Set-FileTextState -State $state -Text $updatedText
+        }
+    }
 }
 
 function Invoke-StandardsDependencyUpdate {
