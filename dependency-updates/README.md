@@ -5,6 +5,8 @@ Target repositories contain dependency declarations and consistency tests, but n
 
 The scheduled workflow reads `targets.json`, checks out each repository, and invokes the update
 engine published by `AtlassianPS.Standards`.
+The controller synchronizes workflow pins and the expected SHA in the existing
+`Tests/Tools/StandardsVersionConsistency.Unit.Tests.ps1` assertion together.
 It creates or refreshes `automation/update-powershell-dependencies` when files change.
 The controller and workflow contract are validated by the repository's `CI` workflow.
 

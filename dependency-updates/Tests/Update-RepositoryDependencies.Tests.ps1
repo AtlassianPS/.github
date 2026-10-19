@@ -109,6 +109,38 @@ Describe 'Update-RepositoryDependencies' {
         [System.IO.File]::ReadAllBytes($plainPath)[0] | Should -Not -Be 0xEF
     }
 
+    It 'synchronizes the existing <Variable> consistency assertion without renaming it' -ForEach @(
+        @{ Variable = '$expectedStandardsSha'; HasBom = $true; NewLine = "`r`n" }
+        @{ Variable = '$script:standardsActionSha'; HasBom = $false; NewLine = "`n" }
+    ) {
+        $repositoryPath = Join-Path $TestDrive 'consistency-test'
+        New-TestRepository -Path $repositoryPath
+        $testsPath = Join-Path $repositoryPath 'Tests/Tools'
+        $null = New-Item -ItemType Directory -Path $testsPath -Force
+        $testPath = Join-Path $testsPath 'StandardsVersionConsistency.Unit.Tests.ps1'
+        $oldSha = '0' * 40
+        $newSha = 'c' * 40
+        $originalText = "$Variable = '$oldSha'" + $NewLine + '$actualSha | Should -Be @(' + $Variable + ')' + $NewLine
+        $encoding = [System.Text.UTF8Encoding]::new($HasBom)
+        [System.IO.File]::WriteAllText($testPath, $originalText, $encoding)
+        Mock Invoke-RestMethod { [PSCustomObject]@{ sha = $newSha } }
+        Mock Get-PSRepository { [PSCustomObject]@{ InstallationPolicy = 'Trusted' } }
+        Mock Get-Module { [PSCustomObject]@{ Version = [Version]'0.3.1' } }
+        Mock Import-Module
+        Mock Invoke-StandardsDependencyUpdate { [PSCustomObject]@{ Changed = $false } }
+
+        Invoke-RepositoryDependencyUpdate -RepositoryPath $repositoryPath -ModuleName TestModule -StandardsVersion '0.3.1'
+
+        $expectedText = $originalText.Replace($oldSha, $newSha)
+        [System.IO.File]::ReadAllText($testPath) | Should -BeExactly $expectedText
+        $expectedBytes = @($encoding.GetPreamble()) + @($encoding.GetBytes($expectedText))
+        [System.IO.File]::ReadAllBytes($testPath) | Should -Be $expectedBytes
+
+        Invoke-RepositoryDependencyUpdate -RepositoryPath $repositoryPath -ModuleName TestModule -StandardsVersion '0.3.1'
+
+        [System.IO.File]::ReadAllBytes($testPath) | Should -Be $expectedBytes
+    }
+
     It 'fails when GitHub does not return a commit SHA' {
         $repositoryPath = Join-Path $TestDrive 'invalid-sha'
         New-TestRepository -Path $repositoryPath
